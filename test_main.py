@@ -1,13 +1,20 @@
 #!/usr/bin/env python3
 from hermes_python.hermes import Hermes
+from hermes_python.ontology import MqttOptions
 
-def intent_received(hermes, intent_message):
-    print('Intent {}'.format(intent_message.intent))
-    print('Bravo !')
-    for (slot_value, slot) in intent_message.slots.items():
-        print('Slot {} -> \n\tRaw: {} \tValue: {}'.format(slot_value, slot[0].raw_value, slot[0].slot_value.value.value))
+import snips_common
 
-    hermes.publish_end_session(intent_message.session_id, None)
+class AddNumber(snips_common.ActionWrapper):
+    
+    def action(self):
+        number_1 = self.intent_message.slots.nb_1.first().value
+        number_2 = self.intent_message.slots.nb_2.first().value
+        result = nb_1 * nb_2
+        self.end_session("Le résultat de l'addition est ",result)
 
-with Hermes('raspberrypi.local:1883') as h:
-    h.subscribe_intents(intent_received).start()
+if __name__ == '__main__':
+    mqtt_opts = MqttOptions()
+
+    with Hermes(mqtt_options=mqtt_opts) as h:
+        h.subscribe_intents("Tengu:addNumber", AddNumber.callback).start()
+
