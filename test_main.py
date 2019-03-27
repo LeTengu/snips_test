@@ -52,3 +52,4 @@ class Calcul(object):
 
 if __name__ == '__main__':
     Calcul()
+    print('Nul')
