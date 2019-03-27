@@ -40,7 +40,7 @@ class Calcul(object):
 
     def master_intent_callback(self, hermes, intent_message):
         coming_intent = intent_message.intent.intent_name
-        if coming_intent == 'addNumber':
+        if coming_intent == 'Tengu:addNumber':
             self.addNumber_callback(hermes, intent_message)
 
 
