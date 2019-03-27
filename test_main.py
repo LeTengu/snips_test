@@ -30,8 +30,8 @@ class Calcul(object):
 
         # action code
         if intent_message.slots.nb_1 and intent_message.slots.nb_2:
-            nb_1 = intent_message.slots.nb_1.first().value()
-            nb_2 = intent_message.slots.nb_2.first().value()
+            nb_1 = intent_message.slots.nb_1.first().value
+            nb_2 = intent_message.slots.nb_2.first().value
             result = int(nb_1 + nb_2)
 
         # audio return
