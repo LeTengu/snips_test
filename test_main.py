@@ -26,13 +26,14 @@ class Calcul(object):
 
     def addNumber_callback(self, hermes, intent_message):
         # if not continue, terminate session
-        hermes.publish_end_session(intent_message.session_id, "Pas possible Monsieur !")
+        # hermes.publish_end_session(intent_message.session_id, "Pas possible Monsieur !")
 
         # action code
         
         nb_1 = intent_message.slots.nb_1.first().value
         nb_2 = intent_message.slots.nb_2.first().value
-        result = int(nb_1 + nb_2)
+        result = nb_1 + nb_2
+        self.end_session('bravo !')
 
         # audio return
         hermes.publish_start_session_notification(intent_message.site_id, "Le résultat est de", result)
