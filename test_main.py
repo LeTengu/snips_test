@@ -29,10 +29,10 @@ class Calcul(object):
         hermes.publish_end_session(intent_message.session_id, "Pas possible Monsieur !")
 
         # action code
-        if intent_message.slots.nb_1 and intent_message.slots.nb_2:
-            nb_1 = intent_message.slots.nb_1.first().value
-            nb_2 = intent_message.slots.nb_2.first().value
-            result = int(nb_1 + nb_2)
+        
+        nb_1 = intent_message.slots.nb_1.first().value
+        nb_2 = intent_message.slots.nb_2.first().value
+        result = int(nb_1 + nb_2)
 
         # audio return
         hermes.publish_start_session_notification(intent_message.site_id, "Le résultat est de", result)
