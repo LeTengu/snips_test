@@ -1,55 +1,17 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-from snipsTools import SnipsConfigParser
+#!/usr/bin/env python3
 from hermes_python.hermes import Hermes
-from hermes_python.ontology import *
-import io
+from hermes_python.ontology import MqttOptions
 
-CONFIG_INI = "config.ini"
-
-MQTT_IP_ADDR = "localhost"
-MQTT_PORT = 1883
-MQTT_ADDR = "{}:{}".format(MQTT_IP_ADDR, str(MQTT_PORT))
-
-class Calcul(object):
-
-    def __init__(self):
-        try:
-            self.config = SnipsConfigParser.read_configuration_file(CONFIG_INI)
-        except :
-            self.config = None
-
-        # start listen MQTT
-        self.start_blocking()
+import snips_common
 
 
-    def addNumber_callback(self, hermes, intent_message):
-        # if not continue, terminate session
-        # hermes.publish_end_session(intent_message.session_id, "Pas possible Monsieur !")
-
-        # action code
-        
-        nb_1 = intent_message.slots.nb_1.first().value
-        nb_2 = intent_message.slots.nb_2.first().value
-        result = nb_1 + nb_2
-        self.end_session('bravo !')
-
-        # audio return
-        hermes.publish_start_session_notification(intent_message.site_id, "Le résultat est de", result)
+class ActionSalutation(snips_common.ActionWrapper):
+    def action(self):
+        self.end_session("Bonjour à vous")
 
 
-    def master_intent_callback(self, hermes, intent_message):
-        coming_intent = intent_message.intent.intent_name
-        if coming_intent == 'addNumber':
-            self.addNumber_callback(hermes, intent_message)
+if __name__ == "__main__":
+    mqtt_opts = MqttOptions()
 
-
-    # register callback function and start MQTT
-    def start_blocking(self):
-        with Hermes(MQTT_ADDR) as h:
-            h.subcribe_intents(self.master_intent_callback).start()
-
-if __name__ == '__main__':
-    Calcul()
-    print('Nul')
+    with Hermes(mqtt_options=mqtt_opts) as h:
+        h.subscribe_intent("Tengu:SayHi", ActionSalutation.callback).start()
