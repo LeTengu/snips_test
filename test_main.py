@@ -2,45 +2,49 @@
 # -*- coding: utf-8 -*-
 
 import paho.mqtt.client as mqtt 
-import paho.mqtt.publish as mqttPublishpl
+import paho.mqtt.publish as mqttPublish
 import json
 
-ADD_NUMBER = 'hermes/intent/Tengu:addNumber'
-SALUT = 'hermes/intent/Tengu:SayHi'
+from snipsTools import SnipsConfigParser
+from hermes_python.hermes import Hermes
+from hermes_python.ontology import *
+import io
 
-def on_connect(client, userdata, flags, rc): 
-    print('Connected') 
-    mqtt.subscribe(ADD_NUMBER)
+TTS_SAY = "hermes/tts/say"
+END_SESSION = "hermes/dialogueManager/endSession"
+ALL_INTENTS = "hermes/intent/#"
+MQTT_IP_ADDR = "localhost"
+MQTT_PORT = 1883
+MQTT_ADDR = "{}:{}".format(MQTT_IP_ADDR, str(MQTT_PORT))
 
-def on_message(client, userdata, msg):
+class Calcul(object):
 
-    # Parse the json response
-    intent_json = json.loads(msg.payload)
-    sessionId = intent_json['sessionId']
-    intentName = intent_json['intent']['intentName']
-    slots = intent_json['slots']
-    print('Intent {}'.format(intentName))
-    for slot in slots:
-        slot_name = slot['slotName']
-        raw_value = slot['rawValue']
-        value = slot['value']['value']
-        print('Slot {} -> \n\tRaw: {} \tValue: {}'.format(slot_name, raw_value, value))
+    def __init__(self):
+        self.start_blocking()
 
-    if intentName == 'addNumber':
-        endTalk(sessionId, 'bravo')
-    elif intentName == 'SayHi':
-        endTalk(sessionId, 'Bonjour monsieur !')
+    def add_callback(self, hermes, intent_message):
+        nb_1 = intent_message.slots.nb_1.first().value
+        nb_2 = intent_message.slots.nb_2.first().value
+        result = nb_1 + nb_2
+        hermes.publish_end_session(intent_message.session_id, "Ok ! le résultat est :")
+
+    def hi_callback(self, hermes, intent_message):
+        hermes.publish_end_session(intent_message.session_id, "Salut !")
+
+    def master_intent_callback(self, hermes, intent_message):
+        coming_intent = intent_message.intent.intent_name
+        if coming_intent == 'addNumber':
+            self.add_callback(hermes, intent_message)
+        if coming_intent == "Tengu:addNumber":
+            self.hi_callback(hermes, intent_message)
+
+    def start_blocking(self):
+        with Hermes(MQTT_ADDR) as h:
+            h.subscribe_intents(self.master_intent_callback).start()
 
 
-def endTalk(sessionId, text):
-    mqttClient.publish('hermes/dialogueManager/endSession', json.dumps({
-        'sessionId': sessionId,
-        'text': text
-    }))
+
+
 
 if __name__ == '__main__':
-    mqtt = mqtt.Client() 
-    mqtt.on_connect = on_connect
-    mqtt.on_message = on_message
-    mqtt.connect('raspberrypi.local', 1883) 
-    mqtt.loop_forever()
+    Calcul()
