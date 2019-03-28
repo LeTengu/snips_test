@@ -1,32 +1,22 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 from snipsTools import SnipsConfigParser
 from hermes_python.hermes import Hermes
-from hermes_python.ontology import *
-import io
+from hermes_python.ontology import MqttOptions
 
-CONFIG_INI = "config.ini"
+import snips_common
 
-MQTT_IP_ADDR = "localhost"
-MQTT_PORT = 1883
-MQTT_ADDR = "{}:{}".format(MQTT_IP_ADDR, str(MQTT_PORT))
-
-class Calcul(object):
+class Calcul(snips_common.ActionWrapper):
 
     def __init__(self):
-        try:
-            self.config = SnipsConfigParser.read_configuration_file(CONFIG_INI)
-        except :
-            self.config = None
-
         # start listen MQTT
         self.start_blocking()
 
 
     def addNumber_callback(self, hermes, intent_message):
         # if not continue, terminate session
-        # hermes.publish_end_session(intent_message.session_id, "Pas possible Monsieur !")
+        hermes.publish_end_session(intent_message.session_id, "Pas possible Monsieur !")
 
         # action code
         
@@ -46,7 +36,9 @@ class Calcul(object):
 
     # register callback function and start MQTT
     def start_blocking(self):
-        with Hermes(MQTT_ADDR) as h:
+        mqtt_options = MqttOptions()
+
+        with Hermes(mqtt_options) as h:
             h.subscribe_intents(self.master_intent_callback).start()
 
 if __name__ == '__main__':
