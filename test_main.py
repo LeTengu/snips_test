@@ -13,7 +13,6 @@ def on_connect(client, userdata, flags, rc):
     mqtt.subscribe(ADD_NUMBER)
 
 def on_message(client, userdata, msg):
-    intent = msg.topic
 
     # Parse the json response
     intent_json = json.loads(msg.payload)
@@ -27,9 +26,9 @@ def on_message(client, userdata, msg):
         value = slot['value']['value']
         print('Slot {} -> \n\tRaw: {} \tValue: {}'.format(slot_name, raw_value, value))
 
-    if intent == ADD_NUMBER:
+    if intentName == 'addNumber':
         endTalk(sessionId, 'bravo')
-    elif intent == SALUT:
+    elif intentName == 'SayHi':
         endTalk(sessionId, 'Bonjour monsieur !')
 
 
