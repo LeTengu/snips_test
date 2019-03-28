@@ -9,25 +9,21 @@ import snips_common
 
 class Calcul(snips_common.ActionWrapper):
 
-    def __init__(self):
+    """def __init__(self):
         # start listen MQTT
         self.start_blocking()
+    """
 
-
-    def addNumber_callback(self, hermes, intent_message):
-        # if not continue, terminate session
-        hermes.publish_end_session(intent_message.session_id, "Pas possible Monsieur !")
-
+    def addNumber_callback(self):
         # action code
         
-        nb_1 = intent_message.slots.nb_1.first().value
-        nb_2 = intent_message.slots.nb_2.first().value
+        nb_1 = self.intent_message.slots.nb_1.first().value
+        nb_2 = self.intent_message.slots.nb_2.first().value
         result = nb_1 + nb_2
 
-        # audio return
-        hermes.publish_start_session_notification(intent_message.site_id, "Le résultat est de", result)
+        self.end_session("Le résultat est de :",result)
 
-
+    """
     def master_intent_callback(self, hermes, intent_message):
         coming_intent = intent_message.intent.intent_name
         if coming_intent == 'addNumber':
@@ -40,6 +36,10 @@ class Calcul(snips_common.ActionWrapper):
 
         with Hermes(mqtt_options) as h:
             h.subscribe_intents(self.master_intent_callback).start()
+    """
 
 if __name__ == '__main__':
-    Calcul()
+    mqtt_options = MqttOptions()
+
+    with Hermes(mqtt_options) as h:
+        h.subscribe_intent("Tengu:addNumber", Calcul.callback).start()
