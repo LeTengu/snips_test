@@ -9,10 +9,10 @@ MQTT_ADDR = "{}:{}".format(MQTT_IP_ADDR, str(MQTT_PORT))
 
 
 def intent_received(hermes, intent_message):
-    sentence = 'Ca va marcher ! ! ! '
+    sentence = 'You asked for '
 
-    if intent_message.intent.intent_name == 'addNumber':
-        print('addNumber')
+    if intent_message.intent.intent_name == 'searchWeatherForecast':
+        print('searchWeatherForecast')
         sentence += 'the weather '
     elif intent_message.intent.intent_name == 'searchWeatherForecastTemperature':
         print('searchWeatherForecastTemperature')
@@ -26,23 +26,17 @@ def intent_received(hermes, intent_message):
     else:
         return
 
-
-    nb_1 = intent_message.slots.nb_1.first()
-    nb_2 = intent_message.slots.nb_2.first()
-
-    
-    """ 
     forecast_country_slot = intent_message.slots.forecast_country.first()
     forecast_locality_slot = intent_message.slots.forecast_locality.first()
     forecast_start_datetime_slot = intent_message.slots.forecast_start_datetime
-    
+
     if forecast_locality_slot is not None:
         sentence += 'in ' + forecast_locality_slot.value
     if forecast_country_slot is not None:
         sentence += 'in ' + forecast_country_slot.value
     if forecast_start_datetime_slot is not None and len(forecast_start_datetime_slot) > 0:
         sentence += ' ' + forecast_start_datetime_slot[0].raw_value
-    """
+
     hermes.publish_end_session(intent_message.session_id, sentence)
 
 
