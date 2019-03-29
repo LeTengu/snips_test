@@ -9,7 +9,7 @@ MQTT_ADDR = "{}:{}".format(MQTT_IP_ADDR, str(MQTT_PORT))
 
 
 def intent_received(hermes, intent_message):
-    sentence = 'You asked for '
+    sentence = 'Ca va marcher ! ! ! '
 
     if intent_message.intent.intent_name == 'addNumber':
         print('addNumber')
@@ -30,7 +30,7 @@ def intent_received(hermes, intent_message):
     nb_1 = intent_message.slots.nb_1.first()
     nb_2 = intent_message.slots.nb_2.first()
 
-    sentence = str(nb_1.value)
+    
     """ 
     forecast_country_slot = intent_message.slots.forecast_country.first()
     forecast_locality_slot = intent_message.slots.forecast_locality.first()
