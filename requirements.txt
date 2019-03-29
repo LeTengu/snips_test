@@ -1,3 +1,1 @@
-# Bindings for the hermes protocol 
-hermes-python>=0.3.3
-
+hermes_python==0.*
