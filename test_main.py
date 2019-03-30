@@ -15,7 +15,7 @@ def intent_received(hermes, intent_message):
         print('searchWeatherForecast')
         sentence += 'the weather '
     elif intent_message.intent.intent_name == 'Tengu:searchWeatherForecast':
-        print('Tengu:searchWeatherForecastTemperature')
+        print('Tengu:searchWeatherForecastTemperatureBlaBla')
         sentence += 'the temperature '
     elif intent_message.intent.intent_name == 'searchWeatherForecastCondition':
         print('searchWeatherForecastCondition')
