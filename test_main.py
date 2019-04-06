@@ -3,7 +3,7 @@
 
 from hermes_python.hermes import Hermes
 
-MQTT_IP_ADDR = "raspi-tengu"
+MQTT_IP_ADDR = "localhost"
 MQTT_PORT = 1883
 MQTT_ADDR = "{}:{}".format(MQTT_IP_ADDR, str(MQTT_PORT))
 
